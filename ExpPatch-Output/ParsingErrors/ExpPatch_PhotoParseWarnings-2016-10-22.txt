@@ -1,0 +1,13 @@
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+[1] "The following are missing from the Google Spreadsheet:\n"
+                    DPQ       Date Patch Quad
+64502 2016-08-01_YB-Gq8 2016-08-01     G    8
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ           Counter CropM CropB
+2110 2016-08-01_YB-Gq6 Stephanie Merhoff  Full  Full
+[1] ""
+[1] "27 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""

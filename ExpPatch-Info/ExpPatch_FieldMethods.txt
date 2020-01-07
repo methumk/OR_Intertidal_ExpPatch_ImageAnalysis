@@ -1,0 +1,89 @@
+Name:  Experimental Patch Succession
+
+
+Purpose: 
+To investigate adaptive foraging by quantifying per capita attack rates (prey preferences) over time, as prey successional dynamics unfold.
+
+
+Location: 
+Yachats, Natural Bridge site.  
+Three flat benches just north of Smelt Sands State Park.  (Park in public parking lot.)
+In "mid-zone" (within Mytilus californianus zone)
+
+
+Overview:
+Create 16-18 1.5x1.5m mussel patch clearings.  
+(Maybe: 8-9 re-cleared in winter.)
+
+
+1. Friday July 5th (and July 8th, if needed) - Patch locations
+Locate and mark two corners of each patch (top left, bottom right when facing landward) using large 4-½ inch lag bolts and pink cable ties.
+
+
+Needs:
+        Drills
+        Drill batteries
+        Drill bits
+        Two 1.5x1.5m PVC quadrats
+        4-½ inch lag bolt (bring 40+)
+        Anchors (40+)
+        Speed wrenches
+        Cable ties
+        Crow bars
+        Needlenose pliers
+        Headlamps
+
+
+2. Saturday 6th thru 12th - Patch clearing
+Photograph patch (Ensure that camera is set to C1 setting (highest resolution images))
+Whelk density comparison: In each patch, in 3 haphazardly located 0.5x0.5m quadrats:
+        Photograph quadrat
+        Count whelks
+        Estimate % mussels (large and small) and % barnacle (species-specific) cover.
+        Clear quadrat, placing all whelks and mussels into numbered bucket 
+(for later counting of the whelks)
+Clear the whole patch
+Needs:
+        1.5x1.5m PVC quadrats
+        0.5x0.5m quadrats
+        Camera
+        Crowbars
+        Buckets (numbered)
+        Datasheets
+        Wire brush (?)
+
+
+3.  Thursday July 11-12 (20-21, if needed) - Quadrat placement
+Mark 9 permanent 25x35cm quadrats within each patch
+        Haphazard "regular" spacing on flat surfaces.
+        Mark 2 corners with small 2-½ inch screws (top-left and bottom-right corners).
+        Numbered washer in top left corner
+Needs:
+        Drills (both)
+        Drill bits
+        Drill batteries (all of them!, fully charged)
+        Small quadrat (25x35cm)
+        Screws (2/plot * 9/patch = 324 => bring 350+)
+        Anchors (350+)
+        Numbered washers  (A1-A9, B1-B9, etc.)
+        Speed wrenches
+        Needlenose pliers
+        
+4. Saturday July 20 & 21 - Survey
+Abundances:
+        Photograph entire patch and all permanent quadrats
+        Count prey in all quadrats from photographs
+        Count whelks in all quadrats
+        Count prey in 3 quadrats (randomly assigned, but same each time.  Assignment T.B.D.)
+Feeding surveys:
+        Survey whelks until 75 (100?) or more feeding observations have been made.
+Needs:
+        Datasheets
+        25x35cm quadrat
+Camera
+Calipers
+Notebook
+
+
+5. Until succession is "done"
+Resurvey every month.  See calendar.

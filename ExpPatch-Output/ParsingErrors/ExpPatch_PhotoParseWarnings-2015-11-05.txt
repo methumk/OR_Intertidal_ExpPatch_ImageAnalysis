@@ -1,0 +1,5 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()

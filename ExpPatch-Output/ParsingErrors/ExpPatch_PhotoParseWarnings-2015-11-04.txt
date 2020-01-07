@@ -1,0 +1,47 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()
+[1] "The following are duplicated in the Google Spreadsheet. The second of each pair has been removed!:\n"
+                   DPQ       Counter   InProg CropM CropB Algae
+973 2015-07-13_YB-BDq5 Julia Bingham Finished  Full  Full    5%
+974 2015-07-13_YB-BDq5 Julia Bingham Finished  Full  Full    8%
+                                                                   Notes       Date Patch Quad
+973                                              sand covering about 15% 2015-07-13    BD    5
+974 sand covering about 3%. counts in right side may be low due to glare 2015-07-13    BD    5
+[1] ""
+[1] ""
+[1] "The following are missing from the Google Spreadsheet:\n"
+                                 DPQ       Date Patch Quad
+30425             2015-07-13_YB-BDq7 2015-07-13    BD    7
+11576 CellCounter_2015-07-13_YB-BDq5       <NA>    07 <NA>
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ       Counter CropM CropB
+974 2015-07-13_YB-BDq5 Julia Bingham  Full  Full
+[1] ""
+[1] "42 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following lines had non-zero mussel counts but were inconsistent in having been obtained from full quadrat pictures even though mussels were specified as having been counted in the cropped or half-cropped pictures.  They have been removed from the data. Zero counts have also been removed.\n"
+                   DPQ      Counter           Species Count Cropped   CropB
+7726 2013-10-07_YB-Aq7 Beatriz Vaca Mytilus trossulus   790    <NA> Cropped
+[1] ""
+[1] ""
+[1] "The following lines had non-zero mussel counts but were inconsistent in having been obtained a cropped quadrat pictures even though mussels were specified as having been counted in the full pictures.  They have NOT YET been removed from the data.  (Currently only lines with zero counts have been removed.)\n"
+                   DPQ      Counter           Species Count Cropped   CropB
+6835 2014-10-13_YB-Aq7 Beatriz Vaca Mytilus trossulus    54       c Cropped
+[1] ""
+[1] ""
+[1] "The following lines could not be assigned sampling areas (i.e. full vs. cropped vs. half-cropped).  Thus their densities will remain as NAs.\n"
+                   DPQ      Counter           Species Count Cropped CropM   CropB
+6835 2014-10-13_YB-Aq7 Beatriz Vaca Mytilus trossulus    54       c  Full Cropped
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 26 that are expected.\n"
+        Date Patch Quad      Counter Count
+1 2014-10-13     A    7 Beatriz Vaca    27
+[1] ""
+[1] ""

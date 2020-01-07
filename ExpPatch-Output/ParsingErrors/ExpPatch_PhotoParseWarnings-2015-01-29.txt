@@ -1,0 +1,37 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()
+[1] "The following are duplicated in the Google Spreadsheet. The second of each pair has been removed!:\n"
+                   DPQ           Counter   InProg CropM   CropB Algae
+170 2013-08-19_YB-ACq4 Stephanie Merhoff Finished  Full Cropped   65%
+385 2013-08-19_YB-ACq4 Stephanie Merhoff Finished  Full Cropped   30%
+                                                                                                         Notes NA
+170                                   High algae and water.  Barnacle and other organisms counts may be higher NA
+385 glare and blur makes it difficult to distinguish between rocks, mussels, and littorines. counts may be low NA
+    NA.1 NA.2 NA.3 NA.4 NA.5       Date Patch Quad
+170   NA   NA   NA   NA   NA 2013-08-19    AC    4
+385   NA   NA   NA   NA   NA 2013-08-19    AC    4
+[1] ""
+[1] ""
+[1] "The following are missing from the Google Spreadsheet:\n"
+                    DPQ       Date Patch Quad
+2525  2013-07-20_YB-Eq1 2013-07-20     E    1
+4745 2013-08-20_YB-BFq1 2013-08-20    BF    1
+4771 2013-08-20_YB-BFq4 2013-08-20    BF    4
+9427 2014-02-26_YB-BFq9 2014-02-26    BF    9
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ           Counter CropM   CropB
+384 2013-08-19_YB-BFq1 Stephanie Merhoff  Full Cropped
+[1] ""
+[1] "124 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 26 that are expected.\n"
+        Date Patch Quad           Counter Count
+1 2013-08-19    AC    5 Stephanie Merhoff    22
+[1] ""
+[1] ""

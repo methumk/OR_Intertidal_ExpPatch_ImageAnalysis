@@ -1,0 +1,33 @@
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+[1] "Not all xls files were successfully imported.  Turn off \"warn=FALSE\" in readLines function.\n"
+[1] ""
+[1] ""
+[1] "The following are missing from the Google Spreadsheet:\n"
+                     DPQ       Date Patch Quad
+26792 2014-06-24_YB-BDq7 2014-06-24    BD    7
+13333 2014-10-13_YB-BEq3 2014-10-13    BE    3
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ           Counter CropM CropB
+520  2015-01-18_YB-Eq3 Stephanie Merhoff  Full  Full
+1430 2015-04-19_YB-Fq5      Beatriz Vaca  Full  Full
+1433 2015-03-17_YB-Fq5      Beatriz Vaca  Full  Full
+1445 2015-06-15_YB-Fq5      Beatriz Vaca  Full  Full
+1452 2015-08-28_YB-Fq6      Beatriz Vaca  Full  Full
+[1] ""
+[1] "37 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following lines had non-zero acorn barnacle counts but were inconsistent in having been obtained from full quadrat pictures even though acorn barnacles were specified as having been counted in the cropped or half-cropped pictures.  They have been removed from the data.  Zero counts have also been removed.\n"
+                  DPQ           Counter          Species Count Cropped   CropB
+276 2014-11-04_YB-Dq4 Stephanie Merhoff Balanus_glandula     1    <NA> Cropped
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 27 that are expected.\n"
+        Date Patch Quad       Counter Count
+1 2013-11-05    BD    5 Julia Bingham     4
+2 2014-04-29    BD    1 Julia Bingham    54
+3 2014-10-13     D    5  Beatriz Vaca     4
+[1] ""
+[1] ""

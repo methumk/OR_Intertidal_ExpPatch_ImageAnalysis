@@ -1,0 +1,50 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()
+[1] "Not all xls files were successfully imported.  Turn off \"warn=FALSE\" in readLines function.\n"
+[1] ""
+[1] ""
+[1] "The following files have problems with their data.\n"
+     [,1]                                            
+[1,] "./2013-08-19_Survey_01_P/2013-08-19_YB-Fq5.xls"
+[1] ""
+[1] ""
+[1] "The following are missing from the Google Spreadsheet:\n"
+                                 DPQ       Date Patch Quad
+2525               2013-07-20_YB-Eq1 2013-07-20     E    1
+2551              2013-07-21_YB-BDq2 2013-07-21    BD    2
+2577              2013-07-21_YB-BDq3 2013-07-21    BD    3
+11081 CellCounter_2013-09-16_YB-BFq9       <NA>    09 <NA>
+11132 CellCounter_2013-10-08_YB-BFq9       <NA>    10 <NA>
+9812               2014-04-01_YB-Cq4 2014-04-01     C    4
+9838               2014-04-01_YB-Cq6 2014-04-01     C    6
+9974              2014-04-20_YB-AGq1 2014-04-20    AG    1
+11972              2014-11-04_YB-Bq5 2014-11-04     B    5
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ       Counter   CropM       CropB
+134  2013-07-20_YB-Dq2 Julia Bingham    Full        Full
+135  2013-07-20_YB-Dq3 Julia Bingham    Full        Full
+359  2014-11-04_YB-Bq2  Beatriz Vaca Cropped     Cropped
+361 2013-09-16_YB-BFq9 Julia Bingham    Full HalfCropped
+367 2013-11-05_YB-BFq9 Julia Bingham    Full     Cropped
+[1] ""
+[1] "244 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following lines had non-zero counts made in the cropped picture for species that should have been counted in full pictures.  They have been removed from the data. Zero counts have also been removed.\n"
+                   DPQ           Counter              Species Count Cropped   CropB
+9690 2013-08-19_YB-Dq4 Stephanie Merhoff Semibalanus cariosus     2       c Cropped
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 26 that are expected.\n"
+        Date Patch Quad           Counter Count
+1 2013-08-19    AC    5 Stephanie Merhoff    22
+2 2013-08-19     F    5 Stephanie Merhoff     4
+3 2013-10-08    BF    9     Julia Bingham    22
+4 2014-04-29    AG    1     Isaac Shepard     4
+[1] ""
+[1] ""

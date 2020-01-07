@@ -1,0 +1,26 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()
+[1] "The following are missing from the Google Spreadsheet:\n"
+                                 DPQ Date Patch Quad
+11916 CellCounter_2015-05-18_YB-BDq5 <NA>    05 <NA>
+11917 CellCounter_2015-05-18_YB-BDq7 <NA>    05 <NA>
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                    DPQ           Counter CropM CropB
+1048 2014-02-26_YB-AFq9 Stephanie Merhoff  Full  Full
+1095 2015-05-18_YB-BDq5     Julia Bingham  Full  Full
+1096 2015-05-18_YB-BDq7     Julia Bingham  Full  Full
+[1] ""
+[1] "35 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 26 that are expected.\n"
+        Date Patch Quad           Counter Count
+1 2014-02-26     D    3      Beatriz Vaca     4
+2 2014-02-26     E    4 Stephanie Merhoff    22
+[1] ""
+[1] ""

@@ -1,0 +1,45 @@
+
+> 	print("The following are errors associated with the parsing of the photo quadrat counts.")
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+
+> 	sink()
+[1] "Not all xls files were successfully imported.  Turn off \"warn=FALSE\" in readLines function.\n"
+[1] ""
+[1] ""
+[1] "The following files have problems with their data.\n"
+     [,1]                                            
+[1,] "./2013-08-19_Survey_01_P/2013-08-19_YB-Fq5.xls"
+[1] ""
+[1] ""
+[1] "The following are missing from the Google Spreadsheet:\n"
+                       DPQ       Date Patch Quad
+2525     2013-07-20_YB-Eq1 2013-07-20     E    1
+8962   2014-01-30_YB-BFq9. 2014-01-30    BF   9.
+10086   2014-04-20_YB-AGq1 2014-04-20    AG    1
+123461   2015-01-26_YB-Bq1 2015-01-26     B    1
+12372    2015-01-26_YB-Bq5 2015-01-26     B    5
+12398    2015-01-26_YB-Bq6 2015-01-26     B    6
+[1] ""
+[1] ""
+[1] "The following are missing from the xls files:\n"
+                   DPQ       Counter CropM CropB
+374  2014-12-04_YB-Bq5  Beatriz Vaca  Full  Full
+375  2014-12-04_YB-Bq6  Beatriz Vaca  Full  Full
+380 2014-01-30_YB-BFq9 Julia Bingham  Full  Full
+[1] ""
+[1] "156 species records in the xls files have been lost because they could not be found on the Google spreadsheet, or were present in the spreadsheet but had no corresponding xls file."
+[1] ""
+[1] ""
+[1] "The following lines had non-zero counts made in the cropped picture for species that should have been counted in full pictures.  They have been removed from the data. Zero counts have also been removed.\n"
+                    DPQ           Counter              Species Count Cropped   CropB
+10287 2013-08-19_YB-Dq4 Stephanie Merhoff Semibalanus cariosus     2       c Cropped
+[1] ""
+[1] ""
+[1] "The following quadrats contain more or less species counts than the 26 that are expected.\n"
+        Date Patch Quad           Counter Count
+1 2013-08-19    AC    5 Stephanie Merhoff    22
+2 2013-08-19     F    5 Stephanie Merhoff     4
+3 2014-04-29    AG    1     Isaac Shepard     4
+4 2014-12-04     B    1      Beatriz Vaca    10
+[1] ""
+[1] ""

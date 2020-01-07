@@ -1,0 +1,6 @@
+[1] "The following are errors associated with the parsing of the photo quadrat counts."
+[1] "The following lines had non-zero counts made in the cropped picture for species that should have been counted in full pictures.  They have been removed from the data. Zero counts have also been removed.\n"
+                    DPQ           Counter              Species Count Cropped   CropB
+50649 2016-02-08_YB-Fq6 Stephanie Merhoff Semibalanus_cariosus     4       c Cropped
+[1] ""
+[1] ""
