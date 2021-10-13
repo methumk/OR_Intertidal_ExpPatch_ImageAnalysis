@@ -30,3 +30,8 @@ The three species of primary interest can, however, look an awful lot like some 
 
 ## Contact Information
 [Mark Novak](https://novaklabosu.github.io) (mark.novak@oregonstate.edu)
+
+![](readme_imgs/patches.png)
+![](readme_imgs/species.png)
+![](readme_imgs/nucella_on_mytilus.png)
+![](readme_imgs/nucella_on_lottia.png)
