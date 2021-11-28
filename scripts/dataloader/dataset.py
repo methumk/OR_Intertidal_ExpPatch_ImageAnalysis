@@ -1,13 +1,17 @@
-from abc import abstractmethod, abstractproperty
-from collections import namedtuple
-import os
-from os.path import dirname, abspath, join
-import re
+import copy
+import pandas as pd
 import logging
+import numpy as np
+import os
+import re
 import torch
-from typing import Any, Callable, Dict, List, Optional, Union
+
+from abc import abstractmethod
+from collections import namedtuple
+from os.path import dirname, abspath
+from skimage import io
 from torch.utils.data import Dataset
-from torchvision import transforms, utils
+from typing import Callable, List, Optional, Union
 
 logging.basicConfig(
     format="%(asctime)s [%(name)s: %(levelname)s] | %(message)s",
@@ -21,52 +25,26 @@ logger = logging.getLogger("dataset.py")
 class PatchDataset(Dataset):
     """Dataset class for patch data."""
 
-    _PATCH_ID = [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "AB",
-        "AC",
-        "AD",
-        "AE",
-        "AF",
-        "AG",
-        "B",
-        "BB",
-        "BC",
-        "BD",
-        "BE",
-        "BF",
-    ]
     # Supported date formats: YYYY-MM-DD, YYYY_MM_DD
+    # Specified here:
+    # https://github.com/NovakLab-EECS/OR_Intertidal_ExpPatch_ImageAnalysis/blob/master/ExpPatch-Info/ExpPatch_PictureFileNameConventions.txt
     _DATE_FORMAT = "([0-9]{4}\-[0-9]{2}\-[0-9]{2})|([0-9]{4}\_[0-9]{2}\_[0-9]{2})"
-    _SAMPLE = namedtuple("Sample", "file date")
 
     def __init__(
         self,
         dataset_path: Union[os.PathLike, str],
-        sample_mapping: List[namedtuple] = None,
         transform: Optional[Callable] = None,
     ):
         """init method.
 
         Args:
-            sample_mapping: patches dict that has been extracted from file/previous save.
             dataset_path: directory containing all of the files that contain the samples.
             transform: Optional transform to be applied on a sample.
         """
-        self._samples = sample_mapping
+        self._df = pd.DataFrame
         self._dataset_path = dataset_path
         self._transform = transform
-
         self._abs_path = dirname(dirname(dirname(abspath(__file__))))
-
-        # Create a mapping from PATCH_ID to list of samples in the patch.
-        self._patches = {key: [] for key in self._PATCH_ID}
 
     def _check_attr(self, attr_name: str, check_val_exists: bool = False):
         if not hasattr(self, attr_name):
@@ -78,40 +56,7 @@ class PatchDataset(Dataset):
                 raise RuntimeError(f"{attr_name} is not initialized")
 
     def __len__(self) -> int:
-        sum_lenghts = 0
-        for v in self.patches.values:
-            sum_lenghts += len(v)
-
-        return sum_lenghts
-
-    @property
-    def patches(self) -> Dict[str, List[namedtuple]]:
-        """patches property."""
-        self._check_attr("_patches", check_val_exists=True)
-        for k, v in self._patches.items():
-            if not v:
-                raise RuntimeError(
-                    f"{type(self).__name__}._patches[{k}] has not been assigned any values!"
-                )
-
-        return self._patches
-
-    @patches.setter
-    def patches(self, patches: Dict[str, namedtuple]):
-        """patches setter.
-
-        Args:
-            patches (list or namedtuple): containing a list of or a single sample.
-        """
-        self._check_attr("_patches")
-        for k, sample in patches.items():
-            if k in self._patches.keys():
-                if isinstance(patches, list):
-                    self._patches[k].extend(sample)
-                else:
-                    self._patches[k].append(sample)
-            else:
-                logger.warning("%s is not a valid PATCH_ID", str(k))
+        return len(self._df)
 
     def _search_for_file(self, **kwargs):
         """Generate a mapping from a given index to a relative file path.
@@ -119,32 +64,65 @@ class PatchDataset(Dataset):
         Args:
             file_type: file type of files that will be added to dataset.
         """
+        buf = []
+        columns = None
         self._check_attr("_dataset_path", check_val_exists=True)
+        total_files = 0
         for root, dirs, files in os.walk(self._dataset_path, topdown=True):
-            for name in files:
-                self._map_files_to_patches(
-                    name=name,
+            # for name in files:
+            if files:
+                total_files += len(files)
+                grouped_files = self._map_files_to_patches(
+                    # name=name,
                     root=root,
                     dirs=dirs,
                     files=files,
-                    kwargs=kwargs
+                    kwargs=kwargs,
                 )
+                if grouped_files is not None:
+                    buf.append(list(grouped_files.values()))
+                    if columns is None:
+                        columns = list(grouped_files.keys())
+        self._df = pd.DataFrame(buf, columns=columns)
 
     @abstractmethod
     def _map_files_to_patches(self, **kwargs):
         """Method that defines a policy for filling patches"""
         pass
 
-    def patches_dict_to_file(self):
-        """Temp method for testing.
-        A better file output will be implemented later.
+    def _read_class_counts(self, xls_file_path: Union[str, os.PathLike]):
+        class_counts = pd.read_table(xls_file_path)
+
+        # Extract Total counts of each type
+        # Drop "Total" in first column
+        class_counts = class_counts.to_numpy()[0][1:]
+        return class_counts
+
+    def _read_landmarks(self, xml_file_path: Union[str, os.PathLike]) -> np.ndarray:
+        """Method to read species coordinate data from .XML file
+
+        Args:
+            xml_file_path: Path to XML file containing species coordinate
+
+        Returns:
+
         """
-        with open(r"test_output.txt", "w") as f:
-            # yaml.dump(self._patches, f)
-            for k, v in self._patches.items():
-                print(str(f"{k}:"), file=f)
-                for sample in v:
-                    print(str(f"{sample}"), file=f)
+        with open(xml_file_path, "r") as f:
+            data = f.read()
+
+        raise RuntimeError("`_read_landmarks` not implemented yet..")
+        return # class_label
+
+    def to_file(self, file_name: Optional[str] = None):
+        """Put dataset in a csv file
+
+        Args:
+            file_name: name of file to put it in
+        """
+        if file_name is None:
+            file_name = "PatchDataset.csv"
+
+        self._df.to_csv(file_name, encoding="utf-8")
 
     @abstractmethod
     def __getitem__(self, idx):
@@ -155,35 +133,64 @@ class PatchDataset(Dataset):
 class PatchPicsDataset(PatchDataset):
     """Dataset class for .jpg images"""
 
-    _FILE_TYPE = ".jpg"
+    _FILE_TYPE = {
+        ".jpg": 0,
+        ".xml": 1,
+        ".xls": 2,
+    }
 
     def __init__(
         self,
         dataset_path: Union[os.PathLike, str],
-        sample_mapping: List[namedtuple] = None,
         transform: Optional[Callable] = None,
     ):
-        super().__init__(dataset_path, sample_mapping, transform)
-
+        super().__init__(dataset_path, transform)
+        self.f = []
         self._search_for_file()
 
-    def _map_files_to_patches(self, root, dirs, files, name, **kwargs):
-        # TODO: add something to deal with `cropped/` photos
+    def _map_files_to_patches(
+        self, root: str, dirs: List[str], files: List[str], **kwargs
+    ):
+        # Offset for 3 associated files being removed.
+        tmp_len_files = len(files) - 3
+        relative_path = "".join(root.split(self._abs_path))[1:]
 
-        if re.search(self._FILE_TYPE, name):
-            print(name)
-            rel_path = "".join(root.split(self._abs_path))
-            date = re.search(self._DATE_FORMAT, name)
-            if not date:
-                logger.warning("No date found in: %s", str(name))
-                return
-            patch_id = re.findall("[A-Z]-(.+?)q", name)
-            if patch_id:
-                self.patches = {
-                    str(patch_id[0]): self._SAMPLE(
-                        join(rel_path, name), date.group(1)
-                    ),
-                }
+        # TODO: fix so it finds all of the files, ending condition stops too early.
+        while len(files) > tmp_len_files:
+            buf = {str(f_type): None for f_type in self._FILE_TYPE.keys()}
+            tmp_files = copy.copy(files)
+            f = tmp_files[0][:-4]
+
+            # File naming patter. Based off specified naming conventions
+            pattern = f"^(\w+_{f})$|^({f})$"
+
+            date = re.match(self._DATE_FORMAT, f)
+            if date:
+
+                # Loop over remaining files and find ones with the same name
+                for i, file in enumerate(tmp_files):
+                    # Create a pattern that is the file name omitting the file extension
+                    patch_pattern = re.match(pattern, file[:-4])
+
+                    if patch_pattern:
+                        file_type = self._FILE_TYPE.get(file[-4:].lower())
+
+                        if file_type is not None:
+                            buf[file[-4:].lower()] = os.path.join(relative_path, file)
+                            files.remove(file)
+                        if None not in buf.values():
+                            # buf contains all associated files
+                            return buf
+            else:
+                del files[0]
+            # Did not find any Similar files
+            if len(files) == len(tmp_files):
+                break
+            if None not in buf.values():
+                self.f.append(files)
+                return buf
+        self.f.append(files)
+        return None
 
     def __getitem__(self, idx):
         """getitem method.
@@ -193,4 +200,14 @@ class PatchPicsDataset(PatchDataset):
         """
         if torch.is_tensor(idx):
             idx = idx.tolist()
-            # TODO: make work with torch.utils.data.Dataset
+
+        img_name = os.path.join(self._abs_path, self._df.iloc[idx, 0])
+        X = io.imread(img_name)
+
+        class_count_path = os.path.join(self._abs_path, self._df.iloc[idx, 2])
+        class_count = self._read_class_counts(class_count_path)
+
+        landmarks_path = os.path.join(self._abs_path, self._df.iloc[idx, 1])
+        y = self._read_landmarks(landmarks_path)
+
+        return X, y
