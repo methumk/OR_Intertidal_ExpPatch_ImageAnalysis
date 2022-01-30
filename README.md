@@ -18,7 +18,7 @@ Each month, each of the 18 x 9 = 162 quadrats was photographed.  We then used [I
 The ultimate goal is to train machines to identify species in the remaining 18 x 6 = 108 images per survey.
 
 #### Data location
-The **_training data_** files (_1,944 images total_) --- including pictures (_jpg_ format), the hand-counts of prey types (_xls_ format), and x-y location of each identified individual (_xml_ format) --- are located in the [ExpPatchPics-Processed](/ExpPatch-Pics/ExpPatchPics-Processed) directory within the [ExpPatch-Pics](/ExpPatch-Pics) directory of this Git respository, orgranized by survey date.
+The **_training (and testing) data_** files (_1,944 images total_) --- including pictures (_jpg_ format), the hand-counts of prey types (_xls_ format), and x-y location of each identified individual (_xml_ format) --- are located in the [ExpPatchPics-Processed](/ExpPatch-Pics/ExpPatchPics-Processed) directory within the [ExpPatch-Pics](/ExpPatch-Pics) directory of this Git respository, orgranized by survey date.
 
 The **_unprocessed pictures_** (_3,888 images total_) are _not_ located in this Git repository (due to GitHub space limits).  Instead, they reside on an [OSU _Box_ account](https://oregonstate.box.com/s/bsha00bay1secmyk1s2yuay0y7uqd5ec), organized by survey date (with "-NP" foldername suffice for "not processed").
 
