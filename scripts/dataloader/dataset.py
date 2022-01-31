@@ -11,6 +11,7 @@ from os.path import dirname, abspath
 from skimage import io
 from torch.utils.data import Dataset
 from typing import Callable, Dict, List, Tuple, Optional, Union
+from PIL import Image
 
 import xml.etree.ElementTree as ET
 
@@ -34,7 +35,8 @@ class PatchDataset(Dataset):
     def __init__(
         self,
         dataset_path: Union[os.PathLike, str],
-        transform: Optional[Callable] = None,
+        x_transform: Optional[Callable] = None,
+        y_transform: Optional[Callable] = None,
     ):
         """init method.
 
@@ -43,7 +45,8 @@ class PatchDataset(Dataset):
             transform: Optional transform to be applied on a sample.
         """
         self._dataset_path = dataset_path
-        self._transform = transform
+        self._transform = x_transform
+        self._y_transform = y_transform
         self._abs_path = dirname(dirname(dirname(abspath(__file__))))
 
     def _check_attr(self, attr_name: str, check_val_exists: bool = False):
@@ -250,6 +253,10 @@ class PatchPicsDataset(PatchDataset):
 
         img_name = os.path.join(self._abs_path, self._df.iloc[idx, 0])
         X = io.imread(img_name)
+        X = Image.fromarray(X)
+
+        if self._transform is not None:
+            X = self._transform(X)
 
         # Dont think we need these files...
         # class_count_path = os.path.join(self._abs_path, self._df.iloc[idx, 2])
@@ -258,45 +265,7 @@ class PatchPicsDataset(PatchDataset):
         landmarks_path = os.path.join(self._abs_path, self._df.iloc[idx, 1])
         y = self._read_landmarks(landmarks_path)
 
+        if self._y_transform is not None:
+            y = self._y_transform(y)
+
         return X, y
-
-
-def convert_labels_to_yolo(X, y, ground_truth_boxes: Dict[str, Tuple[float, float]]):
-    """ Transform the species coordinates into YOLOv5 format.
-    Each row corresponds to a bbox. Data is normalized to image size.
-    x, y coordinates are the center of the bbox.
-
-    YOLOv5 format:
-        species_type, norm_x_coord, norm_y_coord, norm_bbox_width, norm_bbox_height
-
-    Args:
-        X:
-        y:
-        ground_truth_boxes:
-    return:
-        (Tensor): Labels in YOLOv5 format
-    """
-    img_height = X.shape[0]
-    img_width = X.shape[1]
-
-    bboxes = []
-
-    for type, coords in y.items():
-        # Check that the type is in the ground truth boxes
-        try:
-            assert type in ground_truth_boxes.keys()
-        except AssertionError:
-            raise AssertionError(f"Species type: {type} was not found in ground_truth_boxes")
-
-        # Coordinates and dimensions are normalized as a percent of image size.
-        bbox_width = ground_truth_boxes[type][0] / img_width
-        bbox_height = ground_truth_boxes[type][1] / img_height
-        for x_coord, y_coord in coords:
-            bboxes.append([
-                type,
-                x_coord / img_width,
-                y_coord / img_height,
-                bbox_width,
-                bbox_height,
-            ])
-    return torch.as_tensor(bboxes)

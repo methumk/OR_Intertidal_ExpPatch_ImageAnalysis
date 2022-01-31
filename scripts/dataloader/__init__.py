@@ -1,12 +1,10 @@
 """dataloader module."""
-from dataset import (
+from OR_Intertidal_ExpPatch_ImageAnalysis.scripts.dataloader.dataset import (
     PatchDataset,
-    PatchPicsDataset,
-    convert_labels_to_yolo
+    PatchPicsDataset
 )
 
-__all__ = {
+__all__ = (
     "PatchDataset",
     "PatchPicsDataset",
-    "convert_labels_to_yolo",
-}
+)
