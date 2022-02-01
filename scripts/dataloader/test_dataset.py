@@ -23,12 +23,15 @@ from dataset import (
     PatchPicsDataset,
 )
 
+SPLIT_FACTOR = 5
+NUM_IMAGES = 10
+
+
+# Used for reference: https://stackoverflow.com/a/49400513
 def tile_image(split_factor, img_file, classifications, data_type="train"):
     im =  cv2.imread(img_file)
-    print("IM SHAPE: ",im.shape)
-    # im = cv2.resize(im,(1000,500))
     img_date = img_file.split("\\")[-1].split(".")[0]
-    print("IMG DATE:", img_date)
+
     imgheight=im.shape[0]
     imgwidth=im.shape[1]
 
@@ -41,8 +44,8 @@ def tile_image(split_factor, img_file, classifications, data_type="train"):
             y1 = y + M
             x1 = x + N
             tiles = im[y:y+M,x:x+N]
-            
             classification = Counter()
+
             for key, value in classifications.items():
                 coordinates_for_class = classifications[key]
                 for coordinate in coordinates_for_class:
@@ -50,12 +53,9 @@ def tile_image(split_factor, img_file, classifications, data_type="train"):
                         break
                     if int(coordinate[0]) <= x1 and int(coordinate[0]) >= x:
                         classification[key] += 1
-            top_class = classification.most_common(1)[0][0] if classification else "None"
             
-
-
+            top_class = classification.most_common(1)[0][0] if classification else "28"
             cv2.rectangle(im, (x, y), (x1, y1), (0, 255, 0))
-
                 
             if not os.path.exists(f"{data_type}/{str(top_class)}"):
                 os.makedirs(f"{data_type}/{str(top_class)}/")
@@ -63,18 +63,8 @@ def tile_image(split_factor, img_file, classifications, data_type="train"):
             cv2.imwrite(os.path.join(f"{data_type}/{str(top_class)}",f"{img_date}_{str(x)}-{str(x1)}_{str(y)}-{str(y1)}.png"),tiles)
     cv2.imwrite(f"grid-{img_file}",im)
 
-def classification(classifications):
-    classification = Counter()
-    for key, value in classifications.items():
-        coordinates_for_class = classifications[key]
-        for coordinate in coordinates_for_class:
-            if int(coordinate[0]) <= x1 and int(coordinate[0]) >= x:
-                classification[key] += 1
-    top_class = classification.most_common(1)[0][0] if classification else "None"
-
 def imshow(inp, title=None):
     """Imshow for Tensor."""
-    print("TITLE: ", title)
 
     inp = inp.numpy().transpose((1, 2, 0))
     mean = np.array([0.485, 0.456, 0.406])
@@ -88,7 +78,7 @@ def imshow(inp, title=None):
     plt.show()
 
 
-def visualize_model(model, dataloaders, device, class_names, num_images=6):
+def visualize_model(model, dataloaders, device, class_names, num_images=NUM_IMAGES):
     was_training = model.training
     model.eval()
     images_so_far = 0
@@ -112,6 +102,7 @@ def visualize_model(model, dataloaders, device, class_names, num_images=6):
                 if images_so_far == num_images:
                     model.train(mode=was_training)
                     return
+
         model.train(mode=was_training)
 
 def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dataset_sizes, num_epochs=25):
@@ -157,10 +148,12 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
+
             if phase == 'train':
                 scheduler.step()
 
             epoch_loss = running_loss / dataset_sizes[phase]
+            print(f"running_corrects: {running_corrects.double()}, dataset_size: {dataset_sizes}, phase: {phase}")
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
@@ -170,8 +163,6 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-
-        print()
 
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
@@ -184,73 +175,36 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, device, dat
 
 def test_patch_dataset():
     patch_path = "ExpPatch-Pics"
-    batch_size = 10
 
     # Get absolute path to `ExpPatch-Pics` directory
     abs_path = dirname(dirname(dirname(abspath(__file__))))
     patch_path = join(abs_path, patch_path)
 
     patch_pic_dataset = PatchPicsDataset(dataset_path=patch_path)
-    # patch_pic_dataset.open_image()
-    # patch_pic_dataset.to_file()
-    # patch_pic_dataset.patches_dict_to_file()
-    print("SHAPE OF ENTIRE PICS ARRAY\n\n\n\n: ", patch_pic_dataset)
-    img_file1 = patch_pic_dataset[0][2]
-    print(img_file1)
-
+ 
     get_next = iter(patch_pic_dataset)
+
     counter = 0
     try:
-        next(get_next)
+        class_and_file_path = next(get_next)
         while True:
-            class_and_file_path = next(get_next)
+
             labeling = patch_pic_dataset[0][1]
-            print("tiling file: ", class_and_file_path[2])
-            for key, value in labeling.items():
+        
+            for key in labeling.keys():
                 labeling[key] = sorted(labeling[key])
-            data_type = "train" if counter <= 30 else "val"
-            print("data type: ", data_type)
-            tile_image(split_factor=20, img_file=class_and_file_path[2], classifications=labeling, data_type=data_type)
+            
+            data_type = "train" if counter <= 8 else "val"  # adjust condition later based on data size to split training / validation set properly
+            tile_image(split_factor=SPLIT_FACTOR, img_file=class_and_file_path[2], classifications=labeling, data_type=data_type)
+        
+            class_and_file_path = next(get_next)
             counter+=1
+
+
     except StopIteration:
         print("Stop iteration")
     print("COUNTER: ", counter)
-
-
     
-
-    # dict = patch_pic_dataset[0][1]
-    # print("FIRST FILE: ", img_file1)
-    # for key, value in dict.items():
-    #     dict[key] = sorted(dict[key])
-    # tile_image(split_factor=20, img_file=img_file1, classifications=dict, data_type="train")
-
-
-    # img_file2 = patch_pic_dataset[1][2]
-    # print("SECOND FILE: ", img_file2)
-    # dict = patch_pic_dataset[1][1]
-    # for key, value in dict.items():
-    #     dict[key] = sorted(dict[key])
-    # tile_image(split_factor=20, img_file=img_file2, classifications=dict, data_type="val")
-    
-    # return
-    
-    # does the tiling process require the MxNx3 rgb nparray to be split, or do I split the tensors?
-    # is the rgb image representation from imread() or the tensor correct?
-
-    # https://bowenroom.github.io/myBlog/pytorch/fastai2/2020/06/01/torch-unfold.html#pytorch-unfold-&-fold
-    # read further to implement unfolding; potential solution to tiling
-
-
-
-
-
-    # https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html#Resnet
-    # read further to use resnet for transfer learing?
-
-    # https://pytorch.org/hub/pytorch_vision_resnet/
-    # print(img_file)
-    # input_image = Image.open(img_file)
     preprocess = {
     'train': transforms.Compose([
         transforms.RandomResizedCrop(224),
@@ -266,7 +220,8 @@ def test_patch_dataset():
     ]),
     }
 
-
+    # https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html#training-the-model used for 
+    # reference for the following code:
 
     image_datasets = {x: datasets.ImageFolder(x,
                                             preprocess[x])
@@ -276,17 +231,14 @@ def test_patch_dataset():
                 for x in ['train', 'val']}
     dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
     class_names = image_datasets['train'].classes
-    print("CLASS NAMES: ", class_names)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+    # print(f"device: {torch.cuda.get_device_name(0)}  - {device}")
 
 
     # Get a batch of training data
     inputs, classes = next(iter(dataloaders['train']))
-    # print("INPUTS AND CLASSES: ", inputs, classes)
     # Make a grid from batch
     out = torchvision.utils.make_grid(inputs)
-    # matplotlib.get_backend()
     # imshow(out, title=[class_names[x] for x in classes])
 
 
@@ -308,18 +260,9 @@ def test_patch_dataset():
 
 
     model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, dataloaders, device, dataset_sizes,
-                        num_epochs=25)
+                        num_epochs=1)
 
     visualize_model(model_ft, dataloaders, device, class_names)
-
-
-    # dataloader = DataLoader(
-    #     dataset=patch_pic_dataset,
-    #     batch_size=batch_size,
-    #     shuffle=True,
-    #     num_workers=0,
-    # )
-    # print(f'Returned value: {test_return_value}')
 
     # https://www.kaggle.com/pmigdal/transfer-learning-with-resnet-50-in-pytorch
   
