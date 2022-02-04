@@ -269,3 +269,41 @@ class PatchPicsDataset(PatchDataset):
             y = self._y_transform(y)
 
         return X, y
+
+
+class WindowedImages(Dataset):
+    def __init__(self, imgs_dataset, width, height):
+        self._imgs_dataset = imgs_dataset
+        self._w = width
+        self._h = height
+        self._idx = 0
+        self._n_windowed_labels = 0
+        self._windowed_data = None
+
+    def _create_window(self, batch):
+        # Batch: (image, dict of labels)
+        data, labels = batch
+        windowed_imgs, windowed_labels = [], []
+        for label, center_pt in labels.items():
+            # Skip empty label
+            if not center_pt:
+                continue
+            for x, y in center_pt:
+                windowed_img = data[:, x - self._w:x + self._w, y - self._h:y + self._h]
+                windowed_imgs.append(windowed_img)
+                windowed_labels.append(label)
+        return windowed_imgs, windowed_labels
+
+    def __getitem__(self, idx):
+        """getitem method.
+
+        Args:
+            idx (int or torch.tensor): index of sample in the dataset.
+        """
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        batch = self._imgs_dataset[idx]
+        self._windowed_data = self._create_window(batch)
+
+

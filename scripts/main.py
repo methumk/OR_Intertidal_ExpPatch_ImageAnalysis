@@ -9,6 +9,7 @@ from os.path import dirname, abspath, join
 from trainer.train import Trainer
 from torch.utils.data.dataset import Dataset
 
+from PIL import Image
 
 logging.basicConfig(
     format="%(asctime)s [%(name)s: %(levelname)s] | %(message)s",
@@ -19,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger("main.py")
 
 lr = 0.01
-batch_size = 8
+batch_size = 1
 
 
 def device_selector():
@@ -38,6 +39,27 @@ def device_selector():
     return torch.device("cuda" if use_cuda else "cpu")
 
 
+def windowed_collate_fn(batch):
+    w, h = 256, 256
+    # Batch: (image, dict of labels)
+    output_batch = []
+    windowed_imgs, windowed_labels = [], []
+    print("collate_fn:")
+    #print(type(batch[0]), type(batch[1]))
+    for data, labels in batch:
+        for label, center_pt in labels.items():
+            # Skip empty label
+            if not center_pt:
+                continue
+            for x, y in center_pt:
+                windowed_img = data[:, x-w:x+w, y-h:y+h]#.tolist()
+                windowed_imgs.append((windowed_img))
+                windowed_labels.append((label))
+                output_batch.append([(windowed_img), (label)])
+    print(f'wind imgs: {type(windowed_imgs[0])}, wind lbls : {type(windowed_labels)}')
+    return windowed_imgs, windowed_labels
+
+
 def main():
     device = device_selector()
 
@@ -53,10 +75,14 @@ def main():
     # test_set = PatchPicsDataset(dataset_path="wherever test data is")
 
     trainloader = torch.utils.data.DataLoader(
-        train_set, batch_size=batch_size, shuffle=True, num_workers=0,
+        train_set, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=windowed_collate_fn,
     )
 
-    print(train_set[0])
+    #t = windowed_collate_fn(train_set[0])
+    # print(type(train_set[0][0]), type(train_set[0][1]))
+    # print(f"shape trainset[0]: {train_set[0][0].shape}")
+    # print(f'train set[0]:\n{train_set[0][0]}\n-----------------------------------------')
+    # print(f'train set[1]:\n{train_set[0][1]}\n-----------------------------------------')
 
 
     # testloader = torch.utils.data.DataLoader(

@@ -68,14 +68,19 @@ class Trainer:
         """
         self._global_step = 0
         total_steps = epochs * len(self._data_loader)
+
         # start_before()
         for epoch in range(epochs):
             runnning_loss = 0.0
 
             for batch_step, batch in enumerate(self._data_loader):
-                X, y = batch[0].to(self._device), batch[1].to(self._device)
-                X = torch.as_tensor(X)
-                y = torch.as_tensor(y)
+                #for windowed_X, windowed_y in batch:
+                #X, y = batch[0].to(self._device), batch[1].to(self._device)
+                print(type(batch[0]), type(batch[1]))
+                X = torch.tensor(batch[0]).to(self._device)
+                y = torch.tensor(batch[1]).to(self._device)
+                print(type(batch[0]), type(batch[1]))
+                exit(1)
 
                 # Zero the parameter gradients
                 self._optimizer.zero_grad()
