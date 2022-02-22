@@ -4,11 +4,13 @@ import torch.optim as optim
 import logging
 import torch
 import torch.nn.functional as F
-
+import os
 from dataloader.dataset import PatchPicsDataset
 from os.path import dirname, abspath, join
 from trainer.train import Trainer
 from torch.utils.data.dataset import Dataset
+from PIL import ImageDraw
+import sys
 
 logging.basicConfig(
     format="%(asctime)s [%(name)s: %(levelname)s] | %(message)s",
@@ -22,6 +24,8 @@ img_transform = transforms.ToPILImage()
 
 lr = 0.01
 batch_size = 1
+GENERATE_BBOX = False
+SHOW_IMG = True
 
 
 def device_selector(use_cuda=True):
@@ -42,8 +46,27 @@ def device_selector(use_cuda=True):
     return torch.device("cuda" if use_cuda else "cpu")
 
 
+class Bbox:
+    def __init__(self, img_data, width=10):
+        self.im = img_transform(img_data)
+        self._width = width
+        self._draw = ImageDraw.Draw(self.im)
+
+    def add_bbox(self, x0, y0, x1, y1, label):
+        self._draw.rectangle(((x0, y0), (x1, y1)), outline="yellow", width=self._width)
+        self._draw.text((x0, y0), f"Class: {label}", fill="black")
+
+    def show(self):
+        self.im.show()
+
+    def save(self, fname, path=None):
+        if path is not None:
+            fname = os.path.join(path, fname)
+        self.im.save(fname)
+
+
 def windowed_collate_fn(batch):
-    w, h = 256, 256
+    w, h = 64, 64
     # Batch: (image, dict of labels)
     # Get num of labels in a batch to preallocate tensor space
     n_labels = sum([len(k) for k in batch[0][1].values()])
@@ -51,12 +74,16 @@ def windowed_collate_fn(batch):
 
     i = 0
     for data, labels in batch:
-        C, X_max, Y_max = data.shape
+        # Add bboxes around all labels present in image
+        if GENERATE_BBOX:
+            bbox_im = Bbox(data)
+
+        C, Y_max, X_max = data.shape
         for label, center_pt in labels.items():
             # Skip empty label
             if not center_pt:
                 continue
-            for y, x in center_pt:  # IDK what is wrong with the points... if we do x,y it is out of bounds
+            for x, y in center_pt:
                 assert x <= X_max
                 assert y <= Y_max
 
@@ -64,24 +91,34 @@ def windowed_collate_fn(batch):
                 w_lower_pad, w_upper_pad = max(0, x - w), min(X_max, x + w)
                 h_lower_pad, h_upper_pad = max(0, y - h), min(Y_max, y + h)
 
-                windowed_img = data[:, w_lower_pad:w_upper_pad, h_lower_pad:h_upper_pad]
-                # im1 = img_transform(windowed_img)
-                # im1.show()
-                windowed_c, windowed_w, windowed_h = windowed_img.shape
+                if GENERATE_BBOX:
+                    bbox_im.add_bbox(w_lower_pad, h_lower_pad, w_upper_pad, h_upper_pad, label)
+
+                # windowed_img = data[:, w_lower_pad:w_upper_pad, h_lower_pad:h_upper_pad]
+                windowed_img = data[:, h_lower_pad:h_upper_pad, w_lower_pad:w_upper_pad]
+                if windowed_img.nelement() != 0:
+                    im1 = img_transform(windowed_img)
+                    #im1.show()
+                windowed_c, windowed_h, windowed_w = windowed_img.shape
                 pad = (((2 * h - windowed_h) // 2), ((2 * h - windowed_h + 1) // 2), ((2 * w - windowed_w) // 2), ((2 * w - windowed_w + 1) // 2))
+                pad = (((2 * w - windowed_w) // 2), ((2 * w - windowed_w+1) // 2), ((2 * h - windowed_h) // 2),
+                       ((2 * h - windowed_h+1) // 2))
                 padded_img = F.pad(
                     input=windowed_img,
                     pad=pad,
                     mode='constant',
                 )
-                # im = img_transform(padded_img)
-                # im.show()
+                im = img_transform(padded_img)
+                #im.show()
 
                 # Verify that shape of the padded image is the expected shape.
                 assert padded_img.shape == (3, 2 * w, 2 * h), (padded_img.shape, (3, 2 * w, 2 * h), i)
                 windowed_imgs[i] = padded_img
                 windowed_labels[i] = label
                 i += 1
+
+        if GENERATE_BBOX and SHOW_IMG:
+            bbox_im.show()
 
     return windowed_imgs, windowed_labels
 
@@ -101,7 +138,7 @@ def main():
     # test_set = PatchPicsDataset(dataset_path="wherever test data is")
 
     trainloader = torch.utils.data.DataLoader(
-        train_set, batch_size=batch_size, shuffle=False, num_workers=0, collate_fn=windowed_collate_fn,
+        train_set, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=windowed_collate_fn,
     )
 
     #t = windowed_collate_fn(train_set[0])
