@@ -1,0 +1,3 @@
+scripts/__pycache__/
+scripts/dataloader/__pycache__/
+scripts/trainer/__pycache__/
