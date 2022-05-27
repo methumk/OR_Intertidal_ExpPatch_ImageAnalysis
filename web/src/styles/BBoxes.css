@@ -1,0 +1,17 @@
+.content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.folder {
+  width: 50%;
+  cursor: pointer;
+  margin:  10px 0;
+}
+
+@media (max-width: 768px) {
+  .folder {
+    width: 100%;
+  }
+}
