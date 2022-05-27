@@ -15,7 +15,7 @@ readline.question(
   (folderPath) => {
     const BASE_PATH = folderPath
       ? folderPath
-      : '/mnt/c/Users/mrmca/code/school/cs461/OR_Intertidal_ExpPatch_ImageAnalysis/ExpPatch-Pics/ExpPatchPics-Processed';
+      : '../ExpPatch-Pics/ExpPatchPics-Processed';
 
     /* 
 We want to generate a json file that contains keys that are the folders and then all the images in that folders as an array.

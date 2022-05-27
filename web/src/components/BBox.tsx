@@ -179,7 +179,7 @@ export default ({
               }
             }}
           >
-            Undo Last Box ({boxes.length})
+            Undo Last Box
           </button>
         </div>
         <canvas
