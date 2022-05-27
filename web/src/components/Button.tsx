@@ -17,7 +17,6 @@ const Button: FC<IButtonProps> = ({ children, onClick, className, ...props }) =>
     borderRadius: "0.25em",
     color: "black",
     margin: "0.5em",
-    // @ts-expect-error
     ...props.style
   }}>
     {children}
